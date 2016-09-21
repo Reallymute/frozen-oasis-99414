@@ -1,1 +1,1 @@
-worker-oasis: python oasis_main.py
+workeroasis: python oasis_main.py
