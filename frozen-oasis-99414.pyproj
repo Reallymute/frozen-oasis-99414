@@ -27,6 +27,10 @@
     <Content Include="runtime.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="return_result.py" />
+    <Compile Include="work_monitor.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="oasis_main.py" />
   </ItemGroup>
   <ItemGroup>
