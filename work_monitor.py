@@ -2,6 +2,7 @@
 import os
 import redis
 import time
+import sys
 from datetime import date
 import billiard
 import qrcode
@@ -17,7 +18,8 @@ from _io import BytesIO
 
 
 print("Working")
-
+sys.stdout.flush()
+time.sleep(0.3)
 
 
 randyu = random.randint(1,16000000)
@@ -43,121 +45,129 @@ timestamp = time.strftime(" %H:%M:%S")
 datey = date.today()
 r = redis.from_url(redisURL)
 
-#listofmessageindexs = r.hgetall(messageindexstorage+ messagelistlevel1 + ":"+timeindex)
+while (not r.exists("STOP_HEROKU_WORKER")):
+    time.sleep(2)
+    #listofmessageindexs = r.hgetall(messageindexstorage+ messagelistlevel1 + ":"+timeindex)
 
-#for j in ["PNGReader","JPGReader"]:
-#    if r.exists:
-#        #listofmessageindexs = r.hgetall("To_FromTable")
-#        pass
-#    else :
-#        pass
-#fdee = ""
-#xerrt = ""
-#for pl in listofmessageindexs:
-#    if (pl.format("") == "index"):
-#        iggdd = r.hget(messageindexstorage+ messagelistlevel1 + ":"+timeindex,pl.format("")).format("")
-#        xfzzfz = r.get("MessageIndex"+iggdd.format("") + "Command",)
-#        print ("MessageIndex"+iggdd.format("") + "Command")
-#        print(xfzzfz)
-#    print("Redis at " + redisURL + " returned :" + pl.format("")  +  " with value of " + r.hget(messageindexstorage+ messagelistlevel1 + ":"+timeindex,pl.format("")).format("") )
-##print("Message Payload is : " + r.hget(messageindexstorage,xerrt.format("")))
-#        #+ format(pl,"0")
-ouuz = r.smembers(messageindexstorage+ messagelistlevel1)
-tizz = "default"    
-print ouuz
-#ouuz.sort()
-#print ouuz
-arruu = ["0"]
-kurre = ["0"]
-for indggg in ouuz:
-    if (indggg.find(separatorDatePrefix) > 0):
-        tindy = str.split(indggg,separatorDatePrefix)
-    else:
-        tindy = indggg
-    print (tindy[1])
-    #if (tindy[1].find(separatorSuffix) > 0):
-    #    der = tindy[1].index(separatorSuffix)
-    #else:
-    #    der = 5
-    ##der = tindy.index(separatorSuffix)-1
-    #tizz = tindy[1][:der]
-    tizz = tindy[1]
-    arruu.append(tizz)
-    kurre.append(indggg)
-    print "extracted index: " +tizz 
-    #tindy.sort()
-arruu.sort(reverse=True)
-print arruu
-kurre.sort(reverse=True)
-print kurre
-gzyy = 0
-while (len(arruu) > 1 or arruu[len(arruu)-1] <> "0"):
-    gzyy =+ 1
-    localuu = arruu.pop(0)
-    localuee =  kurre.pop(0)
-    if (r.exists("MessageIndex"+localuu + "Status")):
-        CurQuery = r.get("MessageIndex"+localuu + "Command",)
-        #finaldata = 
-        print (" Assigning : MessageIndex"+localuu + "ResultDataPayload:")
-        timestamp = time.strftime(" %H:%M:%S")
-        r.setex("MessageIndex"+localuu + "Status","WORKER_PROCESSING_CONTENTS",90)
-        r.setex("MessageIndex"+localuu + "Timestamp",datey.isoformat() + "T" + timestamp,90)
-        print(CurQuery)
-        qr = qrcode.QRCode(
-        version=1,
-        error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=24,
-        border=4,
-        )
+    #for j in ["PNGReader","JPGReader"]:
+    #    if r.exists:
+    #        #listofmessageindexs = r.hgetall("To_FromTable")
+    #        pass
+    #    else :
+    #        pass
+    #fdee = ""
+    #xerrt = ""
+    #for pl in listofmessageindexs:
+    #    if (pl.format("") == "index"):
+    #        iggdd = r.hget(messageindexstorage+ messagelistlevel1 + ":"+timeindex,pl.format("")).format("")
+    #        xfzzfz = r.get("MessageIndex"+iggdd.format("") + "Command",)
+    #        print ("MessageIndex"+iggdd.format("") + "Command")
+    #        print(xfzzfz)
+    #    print("Redis at " + redisURL + " returned :" + pl.format("")  +  " with value of " + r.hget(messageindexstorage+ messagelistlevel1 + ":"+timeindex,pl.format("")).format("") )
+    ##print("Message Payload is : " + r.hget(messageindexstorage,xerrt.format("")))
+    #        #+ format(pl,"0")
+    ouuz = r.smembers(messageindexstorage+ messagelistlevel1)
+    tizz = "default"    
+    #print ouuz
+    #ouuz.sort()
+    #print ouuz
+    arruu = ["0"]
+    kurre = ["0"]
+    for indggg in ouuz:
+        if (indggg.find(separatorDatePrefix) > 0):
+            tindy = str.split(indggg,separatorDatePrefix)
+        else:
+            tindy = indggg
+        #print (tindy[1])
+        #if (tindy[1].find(separatorSuffix) > 0):
+        #    der = tindy[1].index(separatorSuffix)
+        #else:
+        #    der = 5
+        ##der = tindy.index(separatorSuffix)-1
+        #tizz = tindy[1][:der]
+        tizz = tindy[1]
+        arruu.append(tizz)
+        kurre.append(indggg)
+        #print "extracted index: " +tizz 
+        #tindy.sort()
+    arruu.sort(reverse=True)
+    #print arruu
+    kurre.sort(reverse=True)
+    #print kurre
+    gzyy = 0
+    while (len(arruu) > 1 or arruu[len(arruu)-1] <> "0"):
+        gzyy =+ 1
+        localuu = arruu.pop(0)
+        localuee =  kurre.pop(0)
+        if (r.exists("MessageIndex"+localuu + "Status")):
+            CurQuery = r.get("MessageIndex"+localuu + "Command",)
+            #finaldata = 
+            print (" Assigning : MessageIndex"+localuu + "ResultDataPayload:")
+            timestamp = time.strftime(" %H:%M:%S")
+            r.setex("MessageIndex"+localuu + "Status","WORKER_PROCESSING_CONTENTS",90)
+            r.setex("MessageIndex"+localuu + "Timestamp",datey.isoformat() + "T" + timestamp,90)
+            print("Processing:" + CurQuery)
+            sys.stdout.flush()
+            time.sleep(0.3)
+            qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=24,
+            border=4,
+            )
 
-        #testing = Image.open("qrcode1.png")
-        #testing.save(localuu[1:6]+"_asJPG.jpg","jpeg")
-        #testing.save(localuu[1:6]+"_asPNG.png")
-        qr.add_data(CurQuery)
-        #qr.add_data("http://This is experiment.com")
-        qr.make(fit=True)
-        #myyfactory = qrcode.image.svg.SvgImage
-        #image.models.
-        img = qr.make_image()
-        #print(img)
-        ssuy = open("Blu_QR"+localuu[1:6]+".txt","w")
-        img.save("Blu_QR"+localuu[1:6]+".png", format='PNG')
-        img.save("Blu_QR"+localuu[1:6]+"_RLE.bmp", format='BMP', compression="bmp_rle")
-        img.save("Blu_QR"+localuu[1:6]+".bmp", format='BMP')
-        bbuu = BytesIO()
-        uiee = BytesIO()
-        img.save(bbuu, format='PNG')
-        bbuu.seek(0)
-        #ssuy.flush()
-        #bytesobj = img.tobytes('raw')
-        #bytesobj = img.tobytes('PNG')   FAILS
-        bytesobj = bbuu.getvalue()
-        #khyz = img.get_image()
-        img_str = binascii.b2a_base64(bytesobj)
-        #img_str = binascii.b2a_base64(ravdec.net_compression(bytesobj))
-        #img_str = ravdec.net_compression(binascii.b2a_base64(bytesobj))
-        #compresst = ravdec.net_compression(img_str)
-        #compresst = ravdec.net_compression(img_str)
-        ssuy.writelines(img_str)
-        ssuy.flush()
+            #testing = Image.open("qrcode1.png")
+            #testing.save(localuu[1:6]+"_asJPG.jpg","jpeg")
+            #testing.save(localuu[1:6]+"_asPNG.png")
+            qr.add_data(CurQuery)
+            #qr.add_data("http://This is experiment.com")
+            qr.make(fit=True)
+            #myyfactory = qrcode.image.svg.SvgImage
+            #image.models.
+            img = qr.make_image()
+            #print(img)
+            #ssuy = open("Blu_QR"+localuu[1:6]+".txt","w")
+            #img.save("Blu_QR"+localuu[1:6]+".png", format='PNG')
+            #img.save("Blu_QR"+localuu[1:6]+"_RLE.bmp", format='BMP', compression="bmp_rle")
+            #img.save("Blu_QR"+localuu[1:6]+".bmp", format='BMP')
+            bbuu = BytesIO()
+            uiee = BytesIO()
+            img.save(bbuu, format='PNG')
+            bbuu.seek(0)
+            #ssuy.flush()
+            #bytesobj = img.tobytes('raw')
+            #bytesobj = img.tobytes('PNG')   FAILS
+            bytesobj = bbuu.getvalue()
+            #khyz = img.get_image()
+            img_str = binascii.b2a_base64(bytesobj)
+            #img_str = binascii.b2a_base64(ravdec.net_compression(bytesobj))
+            #img_str = ravdec.net_compression(binascii.b2a_base64(bytesobj))
+            #compresst = ravdec.net_compression(img_str)
+            #compresst = ravdec.net_compression(img_str)
+            #ssuy.writelines(img_str)
+            #ssuy.flush()
 
         
-        #img_str = bytesobj.format("02X")
-        #img = qr.make(CurQuery,mfactory=myyfactory)        
-        #testbase64data = "DEFAULT ERROR"
-        testbase64data = img_str
-        #testbase64data = base64.b64encode(img_str)
-        #buffer = cStringIO.StringIO(yuinn)
-        #img.save(buffer, format="JPEG")
-        #bihhh = binascii.b2a_base64(yuinn)
-        #img_str = base64.b64encode(yuinn)
-        #print "%x" % {img[0]} + " " + format(img[1],"00")
+            #img_str = bytesobj.format("02X")
+            #img = qr.make(CurQuery,mfactory=myyfactory)        
+            #testbase64data = "DEFAULT ERROR"
+            testbase64data = img_str
+            #testbase64data = base64.b64encode(img_str)
+            #buffer = cStringIO.StringIO(yuinn)
+            #img.save(buffer, format="JPEG")
+            #bihhh = binascii.b2a_base64(yuinn)
+            #img_str = base64.b64encode(yuinn)
+            #print "%x" % {img[0]} + " " + format(img[1],"00")
 
-        r.setex("MessageIndex"+localuu + "ResultDataPayload",testbase64data, MessageTTL)
-        r.setex("MessageIndex"+localuu + "Status","DATA_DELIVERED",MessageTTL)
-        r.sadd(messageindexstorage + ":finishedjobs", localuee)
+            r.setex("MessageIndex"+localuu + "ResultDataPayload",testbase64data, MessageTTL)
+            r.setex("MessageIndex"+localuu + "Status","DATA_DELIVERED",MessageTTL)
+            r.sadd(messageindexstorage + ":finishedjobs", localuee)
         
-    r.srem(messageindexstorage + messagelistlevel1,localuee)
-    r.delete(messageindexstorage + messagelistlevel1+":"+localuu)
-    print "Removed : SREM "+ messageindexstorage + messagelistlevel1 +  " "  + '[\"' +localuee +'\"]'
-    print localuu
+        r.srem(messageindexstorage + messagelistlevel1,localuee)
+        r.delete(messageindexstorage + messagelistlevel1+":"+localuu)
+        print "Removed : SREM "+ messageindexstorage + messagelistlevel1 +  " "  + '[\"' +localuee +'\"]'
+        #print localuu
+rtt  = r.delete("STOP_HEROKU_WORKER")
+time.sleep(5)
+print "Worker Terminated with Redis key STOP_HEROKU_WORKER : Count of deleted: " + format(rtt,"000")
+
