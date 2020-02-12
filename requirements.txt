@@ -2,7 +2,7 @@ amqp==1.4.9
 anyjson==0.3.3
 billiard==3.3.0.23
 celery==3.1.23
-Django==1.11.1
+Django==1.11.28
 image==1.5.5
 kombu==3.0.35
 olefile==0.44
