@@ -6,7 +6,7 @@ Django==1.11.1
 image==1.5.5
 kombu==3.0.35
 olefile==0.44
-Pillow==4.1.1
+Pillow==9.0.0
 pytz==2016.6.1
 qrcode==5.3
 redis==2.10.5
